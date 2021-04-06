@@ -5,7 +5,6 @@ name: Deploy Lambda Function
 env:
   ARTIFACT_NAME: csye6225-webapp-${{ github.sha }}.zip
   AWS_REGION: us-west-2
-  ACCOUNT: 973459261718
 
 # Controls when the action will run. 
 on:
@@ -41,7 +40,6 @@ jobs:
       - name: Run a multi-line script
         run: |
           zip function.zip index.js
-          aws lambda create-function --function-name SNS-X-Account \
-          --zip-file fileb://function.zip --handler index.handler --runtime nodejs12.x \
-          --role arn:aws:iam::${{ env.ACCOUNT }}:role/AWSLambdaExecutionRole  \
-          --timeout 60
+          aws lambda update-function-code \
+          --function-name  lambda_sns_function \
+          --zip-file fileb://function.zip
