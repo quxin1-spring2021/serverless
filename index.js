@@ -7,10 +7,10 @@ exports.handler = async function(event, context, callback) {
 
 var sns = event.Records[0].Sns
 var message = sns.Message;
-var operation = sns.Message.Operation;
+var operation = sns.MessageAttributes.Operation;
 var Operation = sns.Operation;
 var Email = sns.Email;
-var email = sns.Message.Email;
+var email = sns.MessageAttributes.Email;
 console.log("Email" + Email);
 console.log("email" + email);
 console.log('Message received from SNS:', message);
