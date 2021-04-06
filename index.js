@@ -5,19 +5,23 @@ var ses = new aws.SES({ region: "us-west-2" });
 exports.handler = async function(event, context, callback) {
 // console.log('Received event:', JSON.stringify(event, null, 4));
 
-// var message = event.Records[0].Sns.Message;
-// console.log('Message received from SNS:', message);
+var sns = event.Records[0].Sns
+var message = sns.Message;
+var operation = sns.Message;
+var Email = sns.Email
+console.log('Message received from SNS:', message);
 // callback(null, "Success");
+
 var params = {
     Destination: {
-      ToAddresses: ['enochquxin+test@gmail.com'],
+      ToAddresses: [Email],
     },
     Message: {
       Body: {
-        Text: { Data: "Test" },
+        Text: { Data: `${message}` },
       },
 
-      Subject: { Data: "Test Email" },
+      Subject: { Data: `Notification for ${operation} A Book Under Your Username` },
     },
     Source: "test@dev.chuhsin.me",
   };
