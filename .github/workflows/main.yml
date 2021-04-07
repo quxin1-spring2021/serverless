@@ -85,7 +85,7 @@ jobs:
             --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
             --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
-            --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"demo_alias\",\"CurrentVersion\":\"1\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"2\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
+            --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"demo_alias\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"2\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
             --description "Ignore ApplicationStop failures due to broken script" --output json)
           echo $output
           dId=$(echo $output | jq -r '.deploymentId')
