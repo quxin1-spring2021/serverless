@@ -91,15 +91,15 @@ jobs:
 
 
 
-      # - name: CodeDeploy Deploy API Call
-      #   run: |
-      #     output=$(aws deploy create-deployment \
-      #       --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
-      #       --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
-      #       --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
-      #       --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"my_alias\",\"CurrentVersion\":\"$CurVer\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"$NewVer\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
-      #       --description "Ignore ApplicationStop failures due to broken script" --output json)
-      #     echo $output
-      #     dId=$(echo $output | jq -r '.deploymentId')
-      #     aws deploy wait deployment-successful --deployment-id $dId
+      - name: CodeDeploy Deploy API Call
+        run: |
+          output=$(aws deploy create-deployment \
+            --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
+            --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=${{ secrets.S3_CODEDEPLOY_BUCKET }},key=${{ env.ARTIFACT_NAME }},bundleType=JSON|YAML \
+            --description "Ignore ApplicationStop failures due to broken script" --output json)
+          echo $output
+          dId=$(echo $output | jq -r '.deploymentId')
+          aws deploy wait deployment-successful --deployment-id $dId
 
