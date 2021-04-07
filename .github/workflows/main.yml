@@ -87,6 +87,8 @@ jobs:
           # (Optional) In the Hooks section, specify a validation Lambda function to run during 
           # a lifecycle event. Replace "LifeCycleEvent" with BeforeAllowTraffic
           # or AfterAllowTraffic. 
+          EOM
+          
           cat ${{ env.ARTIFACT_NAME }}
           pwd
 
