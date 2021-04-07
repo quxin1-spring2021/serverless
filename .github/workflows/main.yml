@@ -3,7 +3,7 @@
 name: Deploy Lambda Function
 
 env:
-  ARTIFACT_NAME: csye6225-lambda-${{ github.sha }}.zip
+  ARTIFACT_NAME: csye6225-lambda-${{ github.sha }}.yml
   AWS_REGION: us-west-2
   CODEDEPLOY_APPLICATION_NAME: csye6225-lambda
   CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME: csye6225-lambda-deployment
@@ -64,7 +64,22 @@ jobs:
           echo $CurVer
           echo $NewVer
 
+      - name: Copy Artifact to S3
+        run: |
+          pwd
+          cd ..
+          pwd
+          ls -al
+          mkdir codedeploy_artifact
+          cd codedeploy_artifact
+          echo {\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"my_alias\",\"CurrentVersion\":\"$CurVer\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"$NewVer\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"} > ${{ env.ARTIFACT_NAME }}
+          cat ${{ env.ARTIFACT_NAME }}
+          pwd
 
+      - name: Copy Artifact to S3
+        run: |
+          pwd
+          aws s3 sync ../codedeploy_artifact s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
 
       # aws deploy push \
       #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
