@@ -78,8 +78,8 @@ jobs:
             - myLambdaFunction:
               Type: AWS::Lambda::Function
               Properties:
-                Name: lambda_sns_function
-                Alias: my_alias
+                Name: "lambda_sns_function"
+                Alias: "my_alias"
                 CurrentVersion: "$CurVer"
                 TargetVersion: "$NewVer"
           EOM
