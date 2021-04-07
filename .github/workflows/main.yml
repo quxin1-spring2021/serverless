@@ -54,8 +54,7 @@ jobs:
       - name: Get Current Version of Alias
         run: |
           output=$(aws lambda list-aliases \
-              --function-name lambda_sns_function
-              --output json)
+              --function-name lambda_sns_function --output json)
           echo $output
 
 
