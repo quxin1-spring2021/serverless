@@ -93,7 +93,7 @@ jobs:
 
       - name: CodeDeploy Deploy API Call
         run: |
-          REVISION=revisionType=S3,s3Location={bucket=${{ secrets.S3_CODEDEPLOY_BUCKET }},key=${{ env.ARTIFACT_NAME }},bundleType=JSON|YAML,}
+          REVISION=revisionType=S3,s3Location={bucket=${{ secrets.S3_CODEDEPLOY_BUCKET }},key=${{ env.ARTIFACT_NAME }},bundleType=YAML,}
           output=$(aws deploy create-deployment \
             --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
