@@ -40,10 +40,11 @@ jobs:
           
       - name: Get Current Version of Alias
         run: |
-          output=$(aws lambda list-aliases \
-              --function-name lambda_sns_function --output json)
+          output=$(aws lambda get-alias \
+              --function-name lambda_sns_function 
+              --name my_alias --output json)
           echo $output
-          curVer=$(echo $output | jq -r '.Aliases[0].FunctionVersion')
+          curVer=$(echo $output | jq -r '.FunctionVersion')
           echo "CurVer=$curVer" >> $GITHUB_ENV
 
           echo $CurVer
