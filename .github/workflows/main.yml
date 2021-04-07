@@ -72,7 +72,17 @@ jobs:
           ls -al
           mkdir codedeploy_artifact
           cd codedeploy_artifact
-          echo {"Resources":[{"MyFunction":{"Properties":{"Alias":"my_alias","CurrentVersion":"$CurVer","Name":"lambda_sns_function","TargetVersion":"$NewVer"},"Type":"AWS::Lambda::Function"}}],"version": "0.0"} > ${{ env.ARTIFACT_NAME }}
+          cat > ${{ env.ARTIFACT_NAME }} <<- EOM
+          version: 0.0
+          Resources:
+            - myLambdaFunction:
+              Type: AWS::Lambda::Function
+              Properties:
+                Name: lambda_sns_function
+                Alias: my_alias
+                CurrentVersion: "$CurVer"
+                TargetVersion: "$NewVer"
+          EOM
           cat ${{ env.ARTIFACT_NAME }}
           pwd
 
