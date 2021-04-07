@@ -80,15 +80,15 @@ jobs:
             - MyFunction: # Replace "MyFunction" with the name of your Lambda function 
                 Type: AWS::Lambda::Function
                 Properties:
-                  Name: "" # Specify the name of your Lambda function
-                  Alias: "" # Specify the alias for your Lambda function
-                  CurrentVersion: "" # Specify the current version of your Lambda function
-                  TargetVersion: "" # Specify the version of your Lambda function to deploy
+                  Name: lambda_sns_function # Specify the name of your Lambda function
+                  Alias: my_alias # Specify the alias for your Lambda function
+                  CurrentVersion: "3" # Specify the current version of your Lambda function
+                  TargetVersion: "16" # Specify the version of your Lambda function to deploy
           # (Optional) In the Hooks section, specify a validation Lambda function to run during 
           # a lifecycle event. Replace "LifeCycleEvent" with BeforeAllowTraffic
           # or AfterAllowTraffic. 
           EOM
-          
+
           cat ${{ env.ARTIFACT_NAME }}
           pwd
 
