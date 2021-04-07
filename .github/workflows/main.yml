@@ -52,7 +52,7 @@ jobs:
           pwd
           ls -al
           mkdir codedeploy_artifact
-          zip -r ${{ env.ARTIFACT_NAME }} webapp
+          zip -r ${{ env.ARTIFACT_NAME }} serverless
           pwd
           ls -al
           mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
