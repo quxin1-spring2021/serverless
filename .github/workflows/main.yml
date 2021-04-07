@@ -82,8 +82,8 @@ jobs:
                 Properties:
                   Name: lambda_sns_function # Specify the name of your Lambda function
                   Alias: my_alias # Specify the alias for your Lambda function
-                  CurrentVersion: "3" # Specify the current version of your Lambda function
-                  TargetVersion: "16" # Specify the version of your Lambda function to deploy
+                  CurrentVersion: "$CurVer" # Specify the current version of your Lambda function
+                  TargetVersion: "$NewVer" # Specify the version of your Lambda function to deploy
           # (Optional) In the Hooks section, specify a validation Lambda function to run during 
           # a lifecycle event. Replace "LifeCycleEvent" with BeforeAllowTraffic
           # or AfterAllowTraffic. 
