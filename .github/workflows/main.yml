@@ -48,35 +48,36 @@ jobs:
 
       - name: Build Artifact
         run: |
-          aws deploy push \
-            --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
-            --description "This is a revision for the lambda function" \
-            --ignore-hidden-files \
-            --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
-            --source .
-        # cd ..
-        # pwd
-        # ls -al
-        # mkdir codedeploy_artifact
-        # zip -r ${{ env.ARTIFACT_NAME }} webapp
-        # pwd
-        # ls -al
-        # mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
-        # pwd
-        # ls -al
-        # cd codedeploy_artifact
-        # pwd
-        # ls -al
-        # cd ..
-        # pwd
-        # ls -al
-        # echo Add other actions to build,
-        # echo test, and deploy your project.
+          cd ..
+          pwd
+          ls -al
+          mkdir codedeploy_artifact
+          zip -r ${{ env.ARTIFACT_NAME }} webapp
+          pwd
+          ls -al
+          mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
+          pwd
+          ls -al
+          cd codedeploy_artifact
+          pwd
+          ls -al
+          cd ..
+          pwd
+          ls -al
+          echo Add other actions to build,
+          echo test, and deploy your project.
+      # aws deploy push \
+      #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
+      #   --description "This is a revision for the lambda function" \
+      #   --ignore-hidden-files \
+      #   --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
+      #   --source .
+
       
-      # - name: Copy Artifact to S3
-      #   run: |
-      #     pwd
-      #     aws s3 sync ../codedeploy_artifact s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
+      - name: Copy Artifact to S3
+        run: |
+          pwd
+          aws s3 sync ../codedeploy_artifact s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
 
       # - name: CodeDeploy Deploy API Call
       #   run: |
