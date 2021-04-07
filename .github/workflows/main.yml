@@ -47,6 +47,9 @@ jobs:
           --function-name  lambda_sns_function \
           --zip-file fileb://function.zip
 
+          echo $GITHUB_ENV
+
+
       # aws deploy push \
       #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
       #   --description "This is a revision for the lambda function" \
@@ -59,7 +62,10 @@ jobs:
               --function-name lambda_sns_function --output json)
           echo $output
           curVer=$(echo $output | jq -r '.Aliases[0].FunctionVersion')
-          echo $curVer
+          echo "CurVer=$curVer" >> $GITHUB_ENV
+          echo $GITHUB_ENV
+
+
 
 #       - name: CodeDeploy Deploy API Call
 #         run: |
