@@ -41,7 +41,7 @@ jobs:
       - name: Get Current Version of Alias
         run: |
           output=$(aws lambda get-alias \
-              --function-name lambda_sns_function 
+              --function-name lambda_sns_function \
               --name my_alias --output json)
           echo $output
           curVer=$(echo $output | jq -r '.FunctionVersion')
@@ -65,7 +65,7 @@ jobs:
           echo $CurVer
           echo $NewVer
 
-      - name: Copy Artifact to S3
+      - name: Craete YAML Artifact
         run: |
           pwd
           cd ..
