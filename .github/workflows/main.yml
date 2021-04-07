@@ -45,49 +45,27 @@ jobs:
       #     aws lambda update-function-code \
       #     --function-name  lambda_sns_function \
       #     --zip-file fileb://function.zip
-
-      - name: Build Artifact
-        run: |
-          cd ..
-          pwd
-          ls -al
-          mkdir codedeploy_artifact
-          zip -r ${{ env.ARTIFACT_NAME }} serverless
-          pwd
-          ls -al
-          mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
-          pwd
-          ls -al
-          cd codedeploy_artifact
-          pwd
-          ls -al
-          cd ..
-          pwd
-          ls -al
-          echo Add other actions to build,
-          echo test, and deploy your project.
       # aws deploy push \
       #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
       #   --description "This is a revision for the lambda function" \
       #   --ignore-hidden-files \
       #   --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
       #   --source .
-
-      
-      - name: Copy Artifact to S3
+      - name: Get Current Version of Alias
         run: |
-          pwd
-          aws s3 sync ../codedeploy_artifact s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
+          aws lambda list-aliases \
+              --function-name lambda_sns_function
 
-      - name: CodeDeploy Deploy API Call
-        run: |
-          output=$(aws deploy create-deployment \
-            --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
-            --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
-            --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
-            --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"demo_alias\",\"CurrentVersion\":\"2\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"3\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
-            --description "Ignore ApplicationStop failures due to broken script" --output json)
-          echo $output
-          dId=$(echo $output | jq -r '.deploymentId')
-          aws deploy wait deployment-successful --deployment-id $dId
+
+#       - name: CodeDeploy Deploy API Call
+#         run: |
+#           output=$(aws deploy create-deployment \
+#             --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
+#             --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
+#             --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
+#             --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"demo_alias\",\"CurrentVersion\":\"2\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"3\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
+#             --description "Ignore ApplicationStop failures due to broken script" --output json)
+#           echo $output
+#           dId=$(echo $output | jq -r '.deploymentId')
+#           aws deploy wait deployment-successful --deployment-id $dId
 
