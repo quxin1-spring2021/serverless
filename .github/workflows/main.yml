@@ -56,7 +56,8 @@ jobs:
           output=$(aws lambda list-aliases \
               --function-name lambda_sns_function --output json)
           echo $output
-
+          fVer=$(echo $output | jq -r '.FunctionVersion')
+          echo $fVer
 
 #       - name: CodeDeploy Deploy API Call
 #         run: |
