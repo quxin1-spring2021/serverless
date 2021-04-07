@@ -45,6 +45,7 @@ jobs:
           echo $output
           curVer=$(echo $output | jq -r '.Aliases[0].FunctionVersion')
           echo "CurVer=$curVer" >> $GITHUB_ENV
+
           echo $CurVer
 
       # Runs a set of commands using the runners shell
@@ -56,8 +57,13 @@ jobs:
           --function-name  lambda_sns_function \
           --zip-file fileb://function.zip
 
+          output=$(aws lambda publish-version \
+          --function-name lambda_sns_function --output json)
+          newVer=$(echo $output | jq -r '.Version')
+          echo "NewVer=$newVer" >> $GITHUB_ENV
           echo $CurVer
-          
+          echo $NewVer
+
 
 
       # aws deploy push \
