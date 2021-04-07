@@ -53,8 +53,10 @@ jobs:
       #   --source .
       - name: Get Current Version of Alias
         run: |
-          aws lambda list-aliases \
+          output=$(aws lambda list-aliases \
               --function-name lambda_sns_function
+              --output json)
+          echo $output
 
 
 #       - name: CodeDeploy Deploy API Call
