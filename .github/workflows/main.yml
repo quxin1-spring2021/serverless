@@ -86,7 +86,7 @@ jobs:
       #   --description "This is a revision for the lambda function" \
       #   --ignore-hidden-files \
       #   --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
-      #   --source .
+      #   --source ..
 
 
 
