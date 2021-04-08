@@ -15,7 +15,7 @@ var bookid = sns.MessageAttributes.BookId.Value;
 
 console.log('Message received from SNS:', message);
 // callback(null, "Success");
-var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+var ddb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 var params_db_get = {
   TableName: 'messages',
