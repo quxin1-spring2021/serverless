@@ -12,6 +12,8 @@ exports.handler = async function (event, context, callback) {
   var operation = sns.MessageAttributes.Operation.Value;
   var email = sns.MessageAttributes.Email.Value;
   var bookid = sns.MessageAttributes.BookId.Value;
+  var msgId = sns.MessageAttributes.MessageId.Value;
+
 
   console.log('Message received from SNS:', message);
   // callback(null, "Success");
@@ -20,7 +22,7 @@ exports.handler = async function (event, context, callback) {
   var params_db_get = {
     TableName: 'messages',
     Key: {
-      'MessageID': `${sns.MessageId}`
+      'MessageID': `${msgId}`
     },
   };
 
@@ -44,7 +46,7 @@ exports.handler = async function (event, context, callback) {
     var params_db_put = {
       TableName: 'messages',
       Item: {
-        'MessageID': `${sns.MessageId}`,
+        'MessageID': `${msgId}`,
         'BookID': `${bookid}`,
         'Operation': `${operation}`
       }
