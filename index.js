@@ -22,11 +22,9 @@ exports.handler = async function (event, context, callback) {
     Key: {
       'MessageID': { S: "61dc2ef8-4ac4-5e30-846a-761017ddb244" }
     },
-    ProjectionExpression: 'ATTRIBUTE_NAME'
   };
 
   // Call DynamoDB to read the item from the table
-  console.log("called")
   var messageId = await ddb.get(params_db_get, function (err, data) {
     console.log("called")
     if (err) {
