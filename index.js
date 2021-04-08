@@ -32,7 +32,7 @@ exports.handler = async function (event, context, callback) {
       console.log("Success", data);
     }
   });
-
+  console.log(messageId)
   if (messageId.length !== 0) {
     console.log("This Message Already Existed.")
     return;
