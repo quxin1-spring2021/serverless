@@ -33,7 +33,7 @@ exports.handler = async function (event, context, callback) {
     }
   });
 
-  if (messageId.length() !== 0) {
+  if (messageId.length !== 0) {
     console.log("This Message Already Existed.")
     return;
   } else {
