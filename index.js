@@ -20,7 +20,7 @@ exports.handler = async function (event, context, callback) {
   var params_db_get = {
     TableName: 'messages',
     Key: {
-      'MessageID': { S: "61dc2ef8-4ac4-5e30-846a-761017ddb244" }
+      'MessageID': "61dc2ef8-4ac4-5e30-846a-761017ddb244" 
     },
   };
 
