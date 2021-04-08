@@ -46,7 +46,7 @@ exports.handler = async function (event, context, callback) {
       Item: {
         'MessageID': `${sns.MessageId}`,
         'BookID': `${bookid}`,
-        'Operation': 'Create' 
+        'Operation': `${operation}`
       }
     };
     await ddb.put(params_db_put, function (err, data) {
