@@ -3,10 +3,12 @@
 name: Deploy Lambda Function
 
 env:
-  ARTIFACT_NAME: csye6225-lambda-${{ github.sha }}.zip
+  ARTIFACT_NAME: csye6225-lambda-${{ github.sha }}.yml
   AWS_REGION: us-west-2
   CODEDEPLOY_APPLICATION_NAME: csye6225-lambda
   CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME: csye6225-lambda-deployment
+  FUNCTION_NAME: lambda_sns_function
+  FUNCTION_ALIAS: my_alias
 
 # Controls when the action will run. 
 on:
@@ -38,54 +40,84 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
           
-      # Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #   run: |
-      #     zip function.zip index.js
-      #     aws lambda update-function-code \
-      #     --function-name  lambda_sns_function \
-      #     --zip-file fileb://function.zip
-
-      - name: Build Artifact
+      - name: Get Current Version of Alias
         run: |
+          output=$(aws lambda get-alias \
+              --function-name ${{ env.FUNCTION_NAME }} \
+              --name ${{ env.FUNCTION_ALIAS }} --output json)
+          echo $output
+          curVer=$(echo $output | jq -r '.FunctionVersion')
+          echo "CurVer=$curVer" >> $GITHUB_ENV
+
+          echo $CurVer
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo //version - ${{ github.sha }} >> index.js
+          zip function.zip index.js
+          aws lambda update-function-code \
+          --function-name  ${{ env.FUNCTION_NAME }} \
+          --zip-file fileb://function.zip
+
+          output=$(aws lambda publish-version \
+          --function-name ${{ env.FUNCTION_NAME }} --output json)
+          newVer=$(echo $output | jq -r '.Version')
+          echo "NewVer=$newVer" >> $GITHUB_ENV
+          echo $CurVer
+          echo $NewVer
+
+      - name: Craete YAML Artifact
+        run: |
+          pwd
           cd ..
           pwd
           ls -al
           mkdir codedeploy_artifact
-          zip -r ${{ env.ARTIFACT_NAME }} serverless
-          pwd
-          ls -al
-          mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact/
-          pwd
-          ls -al
           cd codedeploy_artifact
-          pwd
-          ls -al
-          cd ..
-          pwd
-          ls -al
-          echo Add other actions to build,
-          echo test, and deploy your project.
-      # aws deploy push \
-      #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
-      #   --description "This is a revision for the lambda function" \
-      #   --ignore-hidden-files \
-      #   --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
-      #   --source .
+          cat > ${{ env.ARTIFACT_NAME }} <<- EOM
+          version: 0.0
+          # In the Resources section specify the name, alias, 
+          # target version, and (optional) the current version of your AWS Lambda function. 
+          Resources:
+            - MyFunction: # Replace "MyFunction" with the name of your Lambda function 
+                Type: AWS::Lambda::Function
+                Properties:
+                  Name: ${{ env.FUNCTION_NAME }} # Specify the name of your Lambda function
+                  Alias: ${{ env.FUNCTION_ALIAS }} # Specify the alias for your Lambda function
+                  CurrentVersion: "$CurVer" # Specify the current version of your Lambda function
+                  TargetVersion: "$NewVer" # Specify the version of your Lambda function to deploy
+          # (Optional) In the Hooks section, specify a validation Lambda function to run during 
+          # a lifecycle event. Replace "LifeCycleEvent" with BeforeAllowTraffic
+          # or AfterAllowTraffic. 
+          EOM
 
-      
+          cat ${{ env.ARTIFACT_NAME }}
+          pwd
+
       - name: Copy Artifact to S3
         run: |
           pwd
           aws s3 sync ../codedeploy_artifact s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}
 
+      # aws deploy push \
+      #   --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
+      #   --description "This is a revision for the lambda function" \
+      #   --ignore-hidden-files \
+      #   --s3-location s3://${{ secrets.S3_CODEDEPLOY_BUCKET }}/${{ env.ARTIFACT_NAME }} \
+      #   --source ..
+
+
+
+
       - name: CodeDeploy Deploy API Call
         run: |
+          REVISION=revisionType=S3,s3Location={bucket=${{ secrets.S3_CODEDEPLOY_BUCKET }},key=${{ env.ARTIFACT_NAME }},bundleType=YAML,}
           output=$(aws deploy create-deployment \
             --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.LambdaAllAtOnce \
             --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
-            --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "{\"Resources\":[{\"MyFunction\":{\"Properties\":{\"Alias\":\"demo_alias\",\"CurrentVersion\":\"2\",\"Name\":\"lambda_sns_function\",\"TargetVersion\":\"3\"},\"Type\":\"AWS::Lambda::Function\"}}],\"version\":\"0.0\"}"}}' \
+            --s3-location bucket=${{ secrets.S3_CODEDEPLOY_BUCKET}},bundleType=YAML,key=${{ env.ARTIFACT_NAME }} \
             --description "Ignore ApplicationStop failures due to broken script" --output json)
           echo $output
           dId=$(echo $output | jq -r '.deploymentId')
