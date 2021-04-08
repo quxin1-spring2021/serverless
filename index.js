@@ -25,7 +25,8 @@ exports.handler = async function (event, context, callback) {
   };
 
   // Call DynamoDB to read the item from the table
-  ddb.getItem(params_db_get, function (err, data) {
+  console.log("called")
+  var messageId = ddb.getItem(params_db_get, function (err, data) {
     console.log("called")
     if (err) {
       console.log("Error", err);
