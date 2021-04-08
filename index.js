@@ -20,7 +20,7 @@ var ddb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 var params_db_get = {
   TableName: 'messages',
   Key: {
-    'KEY_NAME': {S: `${sns.MessageId}`}
+    'MessageID': {S: `${sns.MessageId}`}
   },
   ProjectionExpression: 'ATTRIBUTE_NAME'
 };
