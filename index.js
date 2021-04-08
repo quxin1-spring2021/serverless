@@ -22,6 +22,7 @@ exports.handler = async function (event, context, callback) {
     Key: {
       'MessageID': { S: `${sns.MessageId}` }
     },
+    ProjectionExpression: 'ATTRIBUTE_NAME'
   };
 
   // Call DynamoDB to read the item from the table
