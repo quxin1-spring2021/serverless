@@ -27,7 +27,7 @@ exports.handler = async function (event, context, callback) {
   };
 
   // Call DynamoDB to read the item from the table
-  var messageId = await ddb.get(params_db_get, function (err, data) {
+  var item = await ddb.get(params_db_get, function (err, data) {
     console.log("called")
     if (err) {
       console.log("Error", err);
@@ -35,8 +35,8 @@ exports.handler = async function (event, context, callback) {
       console.log("Success", data.Item);
     }
   }).promise();
-  console.log(messageId)
-  if (messageId.length) {
+  console.log(item)
+  if (item.Item) {
     console.log("This Message Already Existed.")
     return;
   } else {
