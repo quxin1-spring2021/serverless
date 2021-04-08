@@ -34,7 +34,7 @@ exports.handler = async function (event, context, callback) {
     }
   }).promise();
   console.log(messageId)
-  if (messageId.length !== 0) {
+  if (messageId.length) {
     console.log("This Message Already Existed.")
     return;
   } else {
