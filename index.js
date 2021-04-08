@@ -11,27 +11,47 @@ var message = sns.Message;
 console.log(sns)
 var operation = sns.MessageAttributes.Operation.Value;
 var email = sns.MessageAttributes.Email.Value;
+var bookid = sns.MessageAttributes.BookId.Value;
 
 console.log('Message received from SNS:', message);
 // callback(null, "Success");
 var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-// var params_db = {
-//   TableName: 'messages',
-//   Key: {
-//     'KEY_NAME': {S: `${message.MessageID}`}
-//   },
-//   ProjectionExpression: 'ATTRIBUTE_NAME'
-// };
+var params_db_get = {
+  TableName: 'messages',
+  Key: {
+    'KEY_NAME': {S: `${sns.MessageId}`}
+  },
+  ProjectionExpression: 'ATTRIBUTE_NAME'
+};
 
 // Call DynamoDB to read the item from the table
-ddb.getItem(params, function(err, data) {
+ddb.getItem(params_db_get, function(err, data) {
   if (err) {
-    console.log("Error", err);
+    console.log("Success", err);
   } else {
-    console.log("Success", data.Item);
+    console.log("Error, this message already exist.", data.Item);
+    return;
   }
 });
+
+// If message ID doesn't exist, put new message id into dynamoDB
+
+var params_db_put = {
+  TableName: 'messages',
+  Item: {
+      'MessageID' : {S: `${sns.MessageId}`},
+      'BookID' : {S: `${bookid}`},
+      'Operation' : {S: 'Create'}
+  }
+  };    
+ddb.putItem(params_db_put, function(err, data) {
+  if (err) {
+      console.log("Error", err);
+  } else {
+      console.log("Success", data);
+  }
+  });
 
 var params = {
     Destination: {
