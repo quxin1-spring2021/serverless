@@ -27,7 +27,7 @@ exports.handler = async function (event, context, callback) {
 
   // Call DynamoDB to read the item from the table
   console.log("called")
-  var messageId = ddb.getItem(params_db_get, function (err, data) {
+  var messageId = ddb.get(params_db_get, function (err, data) {
     console.log("called")
     if (err) {
       console.log("Error", err);
@@ -51,7 +51,7 @@ exports.handler = async function (event, context, callback) {
         'Operation': { S: 'Create' }
       }
     };
-    ddb.putItem(params_db_put, function (err, data) {
+    ddb.put(params_db_put, function (err, data) {
       if (err) {
         console.log("Error", err);
       } else {
