@@ -22,7 +22,6 @@ var params_db_get = {
   Key: {
     'MessageID': {S: `${sns.MessageId}`}
   },
-  ProjectionExpression: 'ATTRIBUTE_NAME'
 };
 
 // Call DynamoDB to read the item from the table
@@ -30,7 +29,7 @@ ddb.getItem(params_db_get, function(err, data) {
   if (err) {
     console.log("Success", err);
   } else {
-    console.log("Error, this message already exist.", data.Item);
+    console.log("Error, this message already exist.", data);
     return;
   }
 });
