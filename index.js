@@ -30,7 +30,6 @@ exports.handler = async function (event, context, callback) {
       console.log("Error", err);
     } else {
       console.log("Success", data);
-      return data;
     }
   });
   console.log(messageId)
