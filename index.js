@@ -27,14 +27,14 @@ exports.handler = async function (event, context, callback) {
 
   // Call DynamoDB to read the item from the table
   console.log("called")
-  var messageId = ddb.get(params_db_get, function (err, data) {
+  var messageId = await ddb.get(params_db_get, function (err, data) {
     console.log("called")
     if (err) {
       console.log("Error", err);
     } else {
       console.log("Success", data.Item);
     }
-  });
+  }).promise();
   console.log(messageId)
   if (messageId.length !== 0) {
     console.log("This Message Already Existed.")
@@ -51,7 +51,7 @@ exports.handler = async function (event, context, callback) {
         'Operation': { S: 'Create' }
       }
     };
-    ddb.put(params_db_put, function (err, data) {
+    await ddb.put(params_db_put, function (err, data) {
       if (err) {
         console.log("Error", err);
       } else {
